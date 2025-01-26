@@ -17,7 +17,7 @@ class MainTemplate extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: mainAppBar(title),
-      body: child,
+      body: SingleChildScrollView(child:child),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         items: [

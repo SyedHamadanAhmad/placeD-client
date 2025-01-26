@@ -10,6 +10,8 @@ class _CreateCourseState extends State<CreateCourse> {
   String level = ''; // To store the selected level for buttons
   double sliderValue = 0; // To store the slider value
   String sliderLevel = 'Beginner'; // To store the slider-selected level
+  String topic="";
+  String? domain;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,11 @@ class _CreateCourseState extends State<CreateCourse> {
             SizedBox(height: 20),
             greyBackgroundBoxWithButtons("What level would you like to learn at?"),
             SizedBox(height: 20),
-            greyBackgroundBoxWithSlider("Choose your experience level"),
+            greyBackgroundBoxWithSlider("How much depth would you like to learn at?"),
+            SizedBox(height: 20),
+            domainSelector(),
+            SizedBox(height: 20),
+            inputTopic()
           ],
         ),
       ),
@@ -166,4 +172,90 @@ class _CreateCourseState extends State<CreateCourse> {
       ),
     );
   }
+  Widget inputTopic(){
+  return Container(
+  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20), // Outer spacing
+  padding: EdgeInsets.all(15), // Inner spacing
+  decoration: BoxDecoration(
+    color: Colors.grey[200], // Light grey background
+    borderRadius: BorderRadius.circular(10), // Rounded corners
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        "Please enter your preparation topic", // Title
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      SizedBox(height: 10), // Spacing between title and input
+      TextField(
+        onChanged: (value) {
+          setState(() {
+            topic=value;
+          });
+        },
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: "Enter topic here", // Placeholder
+        ),
+      ),
+    ],
+  ),
+);
+
 }
+
+Widget domainSelector(){
+  return Container(
+  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20), // Outer spacing
+  padding: EdgeInsets.all(15), // Inner spacing
+  decoration: BoxDecoration(
+    color: Colors.grey[200], // Light grey background
+    borderRadius: BorderRadius.circular(10), // Rounded corners
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        "Select a domain", // Title
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      SizedBox(height: 10), // Spacing between title and dropdown
+      DropdownButton<String>(
+        value: domain, // The currently selected value
+        hint: Text("Choose a domain"), // Placeholder text
+        isExpanded: true, // Make dropdown expand to full width
+        onChanged: (String? newValue) {
+          setState(() {
+            domain = newValue!; // Update the domain variable
+          });
+        },
+        items: <String>[
+          'Option 1',
+          'Option 2',
+          'Option 3',
+          'Option 4',
+          'Option 5'
+        ] // Dropdown options
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value), // Display each option
+          );
+        }).toList(),
+      ),
+    ],
+  ),
+);
+
+
+}
+}
+
+

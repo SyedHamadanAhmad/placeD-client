@@ -19,7 +19,7 @@ class ContentTemplate extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: child,
+      body: SingleChildScrollView(child:child),
     );
   }
 }
