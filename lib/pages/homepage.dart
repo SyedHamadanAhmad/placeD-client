@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.8,
                         margin: EdgeInsets.symmetric(horizontal: 5.0),
                         decoration: BoxDecoration(
-                          color: const Color.fromRGBO(68, 138, 255, 1),
+                          color: const Color.fromARGB(255, 151, 151, 152),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Center(
