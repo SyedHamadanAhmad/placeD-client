@@ -16,6 +16,9 @@ class _CreateCourseState extends State<CreateCourse> {
   String topic="";
   String? domain;
 
+  bool _isLoading=false;
+  String? _errorMessage;
+
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
@@ -261,14 +264,34 @@ Widget domainSelector(){
 
 }
 
+
+
 Widget submitButton() {
+ 
+
   return ElevatedButton(
-    onPressed: () async {
+    onPressed: _isLoading ? null :  () async {
+
+      setState(() {
+        _isLoading=true;
+        _errorMessage='';
+      });
       print(level);
       print(sliderValue);
       print(domain);
       print(topic);
-      await sendPostRequest();
+      try{
+        await sendPostRequest();
+      }
+      catch(e){
+        _errorMessage="An error has occurred. Please try again";
+      }
+      finally{
+        setState(() {
+          _isLoading=false;
+        });
+      }
+      
 
     },
     style: ElevatedButton.styleFrom(
@@ -279,7 +302,7 @@ Widget submitButton() {
         borderRadius: BorderRadius.circular(8), // Rounded corners
       ),
     ),
-    child: Text(
+    child:_isLoading?CircularProgressIndicator(color:Colors.white) : Text(
       'Submit',
       style: TextStyle(
         fontSize: 16,
@@ -303,6 +326,7 @@ Future<void> sendPostRequest() async {
     'depth':sliderValue
   };
 
+  
   // Send the POST request
   try {
     final response = await http.post(
