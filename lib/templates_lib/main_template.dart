@@ -5,12 +5,11 @@ class MainTemplate extends StatelessWidget {
   final String title;
   final Widget child;
   final int currentIndex;
-  
 
   MainTemplate({
     required this.title,
     required this.child,
-    this.currentIndex=0,
+    this.currentIndex = 0,
   });
 
   @override
@@ -29,51 +28,47 @@ class MainTemplate extends StatelessWidget {
     );
   }
 
-
-AppBar mainAppBar(String title) {
-  return AppBar(
-    backgroundColor: const Color(0xFF479539),
-    leading: Padding(
-      padding: const EdgeInsets.only(left: 8.0),
-      child: FittedBox(
-        fit: BoxFit.scaleDown,
-        alignment: Alignment.centerLeft,
-        child: RichText(
-          text: TextSpan(
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            children: [
-              TextSpan(
-                text: title.substring(0, title.length - 1),
+  AppBar mainAppBar(String title) {
+    return AppBar(
+      backgroundColor: const Color(0xFF479539),
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: RichText(
+            text: TextSpan(
+              style: GoogleFonts.poppins(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-              TextSpan(
-                text: title.substring(title.length - 1),
-                style: const TextStyle(
-                  color: Color(0xFF515151),
+              children: [
+                TextSpan(
+                  text: title.substring(0, title.length - 1),
                 ),
-              ),
-            ],
+                TextSpan(
+                  text: title.substring(title.length - 1),
+                  style: const TextStyle(
+                    color: Color(0xFF515151),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-    leadingWidth: 200, // Adjust the width to accommodate the title
-    title: const SizedBox.shrink(), // Hide the default title
-    actions: [
-      IconButton(
-        icon: const Icon(Icons.person),
-        onPressed: () {
-          print('Profile icon tapped');
-        },
-      ),
-    ],
-  );
+      leadingWidth: 300, // Adjust the width to accommodate the title
+      title: const SizedBox.shrink(), // Hide the default title
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.person),
+          onPressed: () {
+            print('Profile icon tapped');
+          },
+        ),
+      ],
+      toolbarHeight: 36, // Add the toolbarHeight property
+    );
+  }
 }
-}
-
-
-
-
