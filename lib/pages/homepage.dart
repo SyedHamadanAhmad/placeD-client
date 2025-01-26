@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Welcome to PlaceD!',
+                'Welcome to PlaceD!!',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
