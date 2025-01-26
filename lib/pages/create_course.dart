@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:placed_client/templates_lib/main_template.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'table_of_contents.dart';
 
 class CreateCourse extends StatefulWidget {
   @override
@@ -48,7 +51,9 @@ class _CreateCourseState extends State<CreateCourse> {
             SizedBox(height: 20),
             domainSelector(),
             SizedBox(height: 20),
-            inputTopic()
+            inputTopic(),
+            SizedBox(height: 20),
+            submitButton()
           ],
         ),
       ),
@@ -153,7 +158,7 @@ class _CreateCourseState extends State<CreateCourse> {
         });
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         decoration: BoxDecoration(
           color: isSelected ? Color.fromARGB(255,71,149,57) : Colors.white, // Highlight if selected
           borderRadius: BorderRadius.circular(8),
@@ -237,11 +242,11 @@ Widget domainSelector(){
           });
         },
         items: <String>[
-          'Option 1',
-          'Option 2',
-          'Option 3',
-          'Option 4',
-          'Option 5'
+          'Software Engineering - MAANG',
+          'Software Engineering - Product Based Companies',
+          'Software Engineering - Data Science & ML',
+          'Non-core roles: Consulting',
+          'Non-core roles: Product Management'
         ] // Dropdown options
             .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
@@ -254,8 +259,79 @@ Widget domainSelector(){
   ),
 );
 
-
-}
 }
 
+Widget submitButton() {
+  return ElevatedButton(
+    onPressed: () async {
+      print(level);
+      print(sliderValue);
+      print(domain);
+      print(topic);
+      await sendPostRequest();
+
+    },
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Color.fromARGB(255,71,149,57),
+
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32), // Padding
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8), // Rounded corners
+      ),
+    ),
+    child: Text(
+      'Submit',
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.white
+      ),
+    ),
+  );
+}
+Future<void> sendPostRequest() async {
+  // Define your API endpoint
+  String toc_endpoint="http://127.0.0.1:8000/api/toc/";
+
+  final url = Uri.parse(toc_endpoint); // Replace with your actual API URL
+
+  // Create a map of data to send in the request body
+  final data = {
+    'topic':topic,
+    'level':level,
+    'area':domain,
+    'depth':sliderValue
+  };
+
+  // Send the POST request
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json', // Set the content type to JSON
+      },
+      body: json.encode(data), // Convert data map to JSON
+    );
+
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response, print success
+      print('Request successful: ${response.body}');
+       Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TableOfContents(responseBody: response.body),
+        ),
+      );
+      
+    } else {
+      // If the server returns an error code, print the error
+      print('Request failed with status: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error sending POST request: $e');
+  }
+
+}
+
+}
 
