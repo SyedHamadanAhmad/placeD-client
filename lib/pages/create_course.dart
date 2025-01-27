@@ -343,7 +343,7 @@ Future<void> sendPostRequest() async {
        Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => TableOfContents(responseBody: response.body),
+          builder: (context) => TableOfContents(responseBody: response.body, level: level, sliderValue: sliderValue, domain: domain),
         ),
       );
       
