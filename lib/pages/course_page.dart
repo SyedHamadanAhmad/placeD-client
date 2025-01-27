@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class YoutubeLink {
   String title;
@@ -187,28 +189,40 @@ class _CoursePageState extends State<CoursePage> {
                           )),
 
                           if (chapter.links.isNotEmpty) ...[
-                            SizedBox(height: 24),
-                            Text(
-                              'Related Resources',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: primaryGreen,
-                              ),
-                            ),
-                            SizedBox(height: 12),
-                            ...chapter.links.map((link) => Padding(
-                              padding: EdgeInsets.only(bottom: 8.0),
-                              child: Text(
-                                '• $link',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.blue[700],
-                                  decoration: TextDecoration.underline,
-                                ),
-                              ),
-                            )),
-                          ],
+  SizedBox(height: 24),
+  Text(
+    'Related Resources',
+    style: TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      color: primaryGreen,
+    ),
+  ),
+  SizedBox(height: 12),
+  ...chapter.links.map((link) => Padding(
+        padding: EdgeInsets.only(bottom: 8.0),
+        child: GestureDetector(
+          onTap: () async {
+            final Uri url = Uri.parse(link);
+            if (await canLaunchUrl(url)) {
+              await launchUrl(url);
+            } else {
+              // Handle error if the URL can't be launched
+              print("Could not launch $link");
+            }
+          },
+          child: Text(
+            '• $link',
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.blue[700],
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+      )),
+],
+
 
                           if (chapter.yt_links.isNotEmpty) ...[
                             SizedBox(height: 24),
