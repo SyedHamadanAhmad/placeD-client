@@ -13,7 +13,8 @@ class HomePage extends StatelessWidget {
       currentIndex: 0,
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0), // Add padding for overall spacing
+          padding:
+              const EdgeInsets.all(16.0), // Add padding for overall spacing
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

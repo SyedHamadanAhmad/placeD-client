@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-
+import 'package:youtube_player_flutter/youtube_player_flutter.dart'; // Add this import for the player
+import 'package:url_launcher/url_launcher.dart'; // Import for URL launcher
 
 class YoutubeLink {
   String title;
@@ -64,12 +64,20 @@ class CoursePage extends StatefulWidget {
 class _CoursePageState extends State<CoursePage> {
   late PageController _pageController;
   late int _currentChapterIndex;
+  YoutubePlayerController? _youtubePlayerController;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
     _currentChapterIndex = 0;
+  }
+
+  @override
+  void dispose() {
+    // Dispose the YouTube player controller when done
+    _youtubePlayerController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -110,14 +118,18 @@ class _CoursePageState extends State<CoursePage> {
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 2),
                         decoration: BoxDecoration(
-                          color: index <= _currentChapterIndex ? primaryGreen : Colors.grey[200],
+                          color: index <= _currentChapterIndex
+                              ? primaryGreen
+                              : Colors.grey[200],
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Center(
                           child: Text(
                             '${index + 1}',
                             style: TextStyle(
-                              color: index <= _currentChapterIndex ? Colors.white : Colors.grey[600],
+                              color: index <= _currentChapterIndex
+                                  ? Colors.white
+                                  : Colors.grey[600],
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
@@ -146,7 +158,8 @@ class _CoursePageState extends State<CoursePage> {
               child: PageView.builder(
                 controller: _pageController,
                 itemCount: widget.chapters.length,
-                onPageChanged: (index) => setState(() => _currentChapterIndex = index),
+                onPageChanged: (index) =>
+                    setState(() => _currentChapterIndex = index),
                 itemBuilder: (context, index) {
                   Chapter chapter = widget.chapters[index];
                   return SingleChildScrollView(
@@ -175,55 +188,57 @@ class _CoursePageState extends State<CoursePage> {
                             ),
                           ),
                           SizedBox(height: 20),
-                          
                           ...chapter.paragraphs.map((paragraph) => Padding(
-                            padding: EdgeInsets.only(bottom: 16.0),
-                            child: Text(
-                              paragraph,
+                                padding: EdgeInsets.only(bottom: 16.0),
+                                child: Text(
+                                  paragraph,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    height: 1.6,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              )),
+                          if (chapter.links.isNotEmpty) ...[
+                            SizedBox(height: 24),
+                            Text(
+                              'Related Resources',
                               style: TextStyle(
-                                fontSize: 16,
-                                height: 1.6,
-                                color: Colors.black87,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: primaryGreen,
                               ),
                             ),
-                          )),
-
-                          if (chapter.links.isNotEmpty) ...[
-  SizedBox(height: 24),
-  Text(
-    'Related Resources',
-    style: TextStyle(
-      fontSize: 20,
-      fontWeight: FontWeight.w600,
-      color: primaryGreen,
-    ),
-  ),
-  SizedBox(height: 12),
-  ...chapter.links.map((link) => Padding(
-        padding: EdgeInsets.only(bottom: 8.0),
-        child: GestureDetector(
-          onTap: () async {
-            final Uri url = Uri.parse(link);
-            if (await canLaunchUrl(url)) {
-              await launchUrl(url);
-            } else {
-              // Handle error if the URL can't be launched
-              print("Could not launch $link");
-            }
-          },
-          child: Text(
-            '• $link',
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.blue[700],
-              decoration: TextDecoration.underline,
-            ),
-          ),
-        ),
-      )),
-],
-
-
+                            SizedBox(height: 12),
+                            ...chapter.links.map((link) => Padding(
+                                  padding: EdgeInsets.only(bottom: 8.0),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      final Uri url = Uri.parse(link);
+                                      try {
+                                        if (await launchUrl(
+                                          url,
+                                          mode: LaunchMode.externalApplication,
+                                        )) {
+                                          print("Launched $link successfully");
+                                        } else {
+                                          print("Could not launch $link");
+                                        }
+                                      } catch (e) {
+                                        print("Error launching URL: $e");
+                                      }
+                                    },
+                                    child: Text(
+                                      '• $link',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.blue[700],
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ),
+                                )),
+                          ],
                           if (chapter.yt_links.isNotEmpty) ...[
                             SizedBox(height: 24),
                             Text(
@@ -235,26 +250,45 @@ class _CoursePageState extends State<CoursePage> {
                               ),
                             ),
                             SizedBox(height: 12),
-                            ...chapter.yt_links.map((ytLink) => Padding(
-                              padding: EdgeInsets.only(bottom: 12.0),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.play_circle_outline, 
-                                    color: Colors.red),
-                                  SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      ytLink.title,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.blue[700],
-                                        decoration: TextDecoration.underline,
+                            ...chapter.yt_links.map((ytLink) {
+                              // Extract YouTube ID from the URL
+                              final videoId = YoutubePlayer.convertUrlToId(
+                                  ytLink.video_url);
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: 12.0),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.play_circle_outline,
+                                            color: Colors.red),
+                                        SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            ytLink.title,
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.blue[700],
+                                              decoration:
+                                                  TextDecoration.underline,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    YoutubePlayer(
+                                      controller: YoutubePlayerController(
+                                        initialVideoId: videoId!,
+                                        flags: YoutubePlayerFlags(
+                                          autoPlay: false,
+                                          mute: false,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
                           ],
                         ],
                       ),
@@ -280,7 +314,8 @@ class _CoursePageState extends State<CoursePage> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryGreen,
-                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -305,7 +340,8 @@ class _CoursePageState extends State<CoursePage> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryGreen,
-                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -319,8 +355,6 @@ class _CoursePageState extends State<CoursePage> {
                           ),
                         ),
                       ),
-                    
-                    
                   ],
                 ),
               ),
@@ -331,5 +365,3 @@ class _CoursePageState extends State<CoursePage> {
     );
   }
 }
-
-

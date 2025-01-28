@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:placed_client/models/chapter.dart';
+import 'package:placed_client/models/courses.dart';
+import 'package:placed_client/models/youtube_links.dart';
 import 'package:placed_client/pages/homepage.dart';
 import 'package:placed_client/pages/create_course.dart';
 import 'package:placed_client/pages/course_page.dart';
-void main() {
-  runApp(const MyApp());
+import 'package:hive_flutter/hive_flutter.dart';
+import 'services/course_service.dart';
+
+void main() async {
+  await Hive.initFlutter(); // Initialize Hive
+  Hive.registerAdapter(CoursesAdapter());
+  Hive.registerAdapter(ChapterAdapter());
+  Hive.registerAdapter(YoutubeLinksAdapter());
+  await CourseService.openBox();
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -24,11 +36,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => HomePage(),
         '/createCourse': (context) => CreateCourse(),
-        
       },
-      
-      
     );
   }
 }
-
