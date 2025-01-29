@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:placed_client/pages/course_page.dart';
 import 'package:placed_client/pages/homepage.dart'; // Update with the actual location of your HomePage
-//import 'package:placed_client/pages/coursespage.dart'; // Update with the actual location of your CoursesPage
 import 'package:placed_client/pages/resume_ques.dart';
 import 'package:placed_client/pages/saved_courses.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:placed_client/models/user_model.dart';
+import 'package:provider/provider.dart';
+
+
 
 class MainTemplate extends StatelessWidget {
   final String title;
@@ -20,6 +24,7 @@ class MainTemplate extends StatelessWidget {
   void _navigateToPage(BuildContext context, int index) {
     switch (index) {
       case 0:
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
@@ -42,6 +47,7 @@ class MainTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+      
     return Scaffold(
       appBar: mainAppBar(context, title),
       body: SingleChildScrollView(child: child),
@@ -58,6 +64,7 @@ class MainTemplate extends StatelessWidget {
   }
 
   AppBar mainAppBar(BuildContext context, String title) {
+    User? user = FirebaseAuth.instance.currentUser;  // Get the current user
     return AppBar(
       backgroundColor: const Color(0xFF479539),
       leading: Padding(
@@ -90,12 +97,25 @@ class MainTemplate extends StatelessWidget {
       leadingWidth: 300, // Adjust the width to accommodate the title
       title: const SizedBox.shrink(), // Hide the default title
       actions: [
-        IconButton(
-          icon: const Icon(Icons.person),
-          onPressed: () {
-            Navigator.pushNamed(context, '/profile');
-          },
-        ),
+        user == null || user.photoURL == null
+            ? IconButton(
+                icon: const Icon(Icons.person),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/profile');
+                },
+              )
+            : Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/profile'); // Navigate to Profile
+                  },
+                  child: CircleAvatar(
+                    radius: 15,
+                    backgroundImage: NetworkImage(user.photoURL!),
+                  ),
+                ),
+              ),
       ],
       toolbarHeight: 36, // Add the toolbarHeight property
     );

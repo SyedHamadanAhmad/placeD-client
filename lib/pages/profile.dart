@@ -1,62 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'package:placed_client/models/user_model.dart';  // Import your user provider
 
-class Profile extends StatefulWidget {
-  const Profile({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfilePageState extends State<ProfilePage> {
   User? user;
   GoogleSignIn googleSignIn = GoogleSignIn();
 
   @override
   void initState() {
     super.initState();
-    // Check for authentication state when the widget is first created
     FirebaseAuth.instance.authStateChanges().listen((user) {
       setState(() {
         this.user = user;
       });
+      if (user != null) {
+        context.read<UserProvider>().setUser(user!); // Set the user in provider
+      }
     });
   }
 
   // Google Sign-In method
   Future<void> _signInWithGoogle() async {
     try {
-      print("IN GOOGLE FUNCTION");
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
-      
-      // Create a new credential
+
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      // Sign in with the Google credential
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-
-      // Now you can access user details and print them
-      User? user = userCredential.user;
-      if (user != null) {
-        print("User ID: ${user.uid}");
-        print("User Name: ${user.displayName}");
-        print("User Email: ${user.email}");
-        print("User Photo URL: ${user.photoURL}");
-      }
+      await FirebaseAuth.instance.signInWithCredential(credential);
     } catch (e) {
       print("Error signing in with Google: $e");
     }
   }
 
-  // Sign out method
+  // Sign-out method
   Future<void> _signOut() async {
     await FirebaseAuth.instance.signOut();
     googleSignIn.signOut();
+
+    context.read<UserProvider>().clearUser(); // Clear user data from provider
   }
 
   @override

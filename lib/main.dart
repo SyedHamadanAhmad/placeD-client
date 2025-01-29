@@ -7,11 +7,14 @@ import 'package:placed_client/pages/create_course.dart';
 import 'package:placed_client/pages/course_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:placed_client/pages/resume_ques.dart';
+import 'package:provider/provider.dart';
 import 'services/course_service.dart';
 import 'package:placed_client/pages/saved_courses.dart';
 //import 'screens/YoutubePlayerScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:placed_client/pages/profile.dart';
+import 'package:placed_client/models/user_model.dart';
+
 
 void main() async {
   await Hive.initFlutter(); // Initialize Hive
@@ -21,7 +24,12 @@ void main() async {
   await CourseService.openBox();
   await Firebase.initializeApp();
 
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -44,7 +52,7 @@ class MyApp extends StatelessWidget {
         '/createCourse': (context) => CreateCourse(),
         '/savedcourses': (context)=>SavedCourses(),
         '/resumeQuesPage': (context) => ResumeQuesPage(),
-        '/profile': (context) => const Profile(), // Profile route
+        '/profile': (context) => const ProfilePage(), // Profile route
       },
     );
   }

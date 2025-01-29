@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:placed_client/templates_lib/main_template.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:placed_client/models/user_model.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatelessWidget {
   final CarouselSliderController _carouselController =
@@ -8,6 +11,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    User? currentUser = context.watch<UserProvider>().user;
     return MainTemplate(
       title: 'PlaceD',
       currentIndex: 0,
@@ -116,7 +120,13 @@ class HomePage extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/createCourse');
+                        if(currentUser!=null){
+                           Navigator.pushNamed(context, '/createCourse');
+                        }
+                        else{
+                          Navigator.pushNamed(context, '/profile');
+                        }
+                       
                       },
                       icon: Icon(
                         Icons.add,
