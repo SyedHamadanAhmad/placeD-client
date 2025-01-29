@@ -120,7 +120,7 @@ class _TableOfContentsState extends State<TableOfContents> {
       _isLoading = true; // Set loading state to true
     });
 
-    final url = 'http://3.108.31.127:8000/generate-course/'; // Replace with your API endpoint
+    final url = 'http://3.108.31.127/generate-course/'; // Replace with your API endpoint
 
     // Create a payload with selected contents
     List<String> selectedContents = getSelectedContents();
