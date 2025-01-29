@@ -117,13 +117,26 @@ class _CoursePageState extends State<CoursePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: primaryGreen,
-        title: Text(
-          'Course: ${widget.courseName}',
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        ),
-      ),
+  elevation: 0,
+  backgroundColor: primaryGreen,
+  title: Text(
+    'Course: ${widget.courseName}',
+    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+  ),
+  actions: [
+    
+    IconButton(
+      icon: const Icon(Icons.download, color: Colors.white), // Download Button
+      onPressed: () {
+        _saveCoursetoHive();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Course saved!')),
+        );
+      },
+    ),
+  ],
+),
+
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         child: Column(
@@ -295,19 +308,6 @@ class _ChapterContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-             Align(
-              alignment: Alignment.centerRight, // Aligns the button to the right side
-              child: IconButton(
-                icon: const Icon(Icons.download, color: Colors.blue), // Replace with download icon
-                onPressed: () {
-                  onSave();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Progress saved!')),
-                  );
-                },
-              ),
-            ),
-
             Text(
               chapter.topic_name,
               style: TextStyle(
