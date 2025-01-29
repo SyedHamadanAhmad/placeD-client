@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:placed_client/pages/course_page.dart';
+import 'package:placed_client/pages/homepage.dart'; // Update with the actual location of your HomePage
+//import 'package:placed_client/pages/coursespage.dart'; // Update with the actual location of your CoursesPage
+import 'package:placed_client/pages/resume_ques.dart';
 
 class MainTemplate extends StatelessWidget {
   final String title;
@@ -12,17 +16,41 @@ class MainTemplate extends StatelessWidget {
     this.currentIndex = 0,
   });
 
+  void _navigateToPage(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+        break;
+      case 1:
+        /*Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => CoursePage()),
+        );*/
+        break;
+      case 2:
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ResumeQuesPage()),
+        );
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: mainAppBar(title),
-      body: SingleChildScrollView(child:child),
+      body: SingleChildScrollView(child: child),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
+        onTap: (index) => _navigateToPage(context, index), // Navigation logic
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Courses'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'Resume'),
         ],
       ),
     );

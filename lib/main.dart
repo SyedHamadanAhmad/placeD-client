@@ -6,7 +6,10 @@ import 'package:placed_client/pages/homepage.dart';
 import 'package:placed_client/pages/create_course.dart';
 import 'package:placed_client/pages/course_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:placed_client/pages/resume_ques.dart';
 import 'services/course_service.dart';
+
+//import 'screens/YoutubePlayerScreen.dart';
 
 void main() async {
   await Hive.initFlutter(); // Initialize Hive
@@ -36,6 +39,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => HomePage(),
         '/createCourse': (context) => CreateCourse(),
+        '/resumeQuesPage': (context) => ResumeQuesPage()
       },
     );
   }
