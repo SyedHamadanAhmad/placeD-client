@@ -111,31 +111,30 @@ class _CoursePageState extends State<CoursePage> {
                       onTap: () {
                         _pageController.animateToPage(
                           index,
-                          duration: Duration(milliseconds: 300),
+                          duration: Duration(milliseconds: 600),
                           curve: Curves.easeInOut,
                         );
                       },
                       child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 2),
-                        decoration: BoxDecoration(
-                          color: index <= _currentChapterIndex
-                              ? primaryGreen
-                              : Colors.grey[200],
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Center(
-                          child: Text(
-                            '${index + 1}',
-                            style: TextStyle(
-                              color: index <= _currentChapterIndex
-                                  ? Colors.white
-                                  : Colors.grey[600],
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                            width: 24, // Set a fixed width
+                            height: 24, // Set a fixed height
+                            margin: EdgeInsets.symmetric(horizontal: 2),
+                            decoration: BoxDecoration(
+                              color: index <= _currentChapterIndex ? primaryGreen : Colors.grey[200],
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '${index + 1}',
+                                style: TextStyle(
+                                  color: index <= _currentChapterIndex ? Colors.white : Colors.grey[600],
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
+
                     ),
                   ),
                 ),
