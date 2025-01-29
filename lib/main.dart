@@ -10,6 +10,8 @@ import 'package:placed_client/pages/resume_ques.dart';
 import 'services/course_service.dart';
 import 'package:placed_client/pages/saved_courses.dart';
 //import 'screens/YoutubePlayerScreen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:placed_client/pages/profile.dart';
 
 void main() async {
   await Hive.initFlutter(); // Initialize Hive
@@ -17,7 +19,8 @@ void main() async {
   Hive.registerAdapter(ChapterAdapter());
   Hive.registerAdapter(YoutubeLinksAdapter());
   await CourseService.openBox();
- 
+  await Firebase.initializeApp();
+
   runApp(MyApp());
 }
 
@@ -40,7 +43,8 @@ class MyApp extends StatelessWidget {
         '/': (context) => HomePage(),
         '/createCourse': (context) => CreateCourse(),
         '/savedcourses': (context)=>SavedCourses(),
-        '/resumeQuesPage': (context) => ResumeQuesPage()
+        '/resumeQuesPage': (context) => ResumeQuesPage(),
+        '/profile': (context) => const Profile(), // Profile route
       },
     );
   }

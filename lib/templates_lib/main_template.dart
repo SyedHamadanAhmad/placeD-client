@@ -43,7 +43,7 @@ class MainTemplate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: mainAppBar(title),
+      appBar: mainAppBar(context, title),
       body: SingleChildScrollView(child: child),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
@@ -57,7 +57,7 @@ class MainTemplate extends StatelessWidget {
     );
   }
 
-  AppBar mainAppBar(String title) {
+  AppBar mainAppBar(BuildContext context, String title) {
     return AppBar(
       backgroundColor: const Color(0xFF479539),
       leading: Padding(
@@ -93,7 +93,7 @@ class MainTemplate extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.person),
           onPressed: () {
-            print('Profile icon tapped');
+            Navigator.pushNamed(context, '/profile');
           },
         ),
       ],

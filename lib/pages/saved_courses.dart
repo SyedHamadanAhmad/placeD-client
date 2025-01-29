@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:placed_client/models/courses.dart'; // Make sure to import the Courses model
+import 'package:placed_client/models/courses.dart';
+import 'package:placed_client/templates_lib/main_template.dart'; // Make sure to import the Courses model
 
 class SavedCourses extends StatefulWidget {
   const SavedCourses({super.key});
@@ -72,31 +73,38 @@ class _SavedCoursesState extends State<SavedCourses> {
         }
       }
     }
+    
 }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Saved Courses')),
-      body: allCourses.isEmpty
-          ? const Center(child: Text("No courses saved"))
-          : ListView.builder(
-              itemCount: allCourses.length,
-              itemBuilder: (context, index) {
-                final course = allCourses[index];
-                return ListTile(
-                  title: Text(course.courseName),
-                  subtitle: Text("Course ID: ${course.courseId}"),
-                  leading: Image.network(course.courseImg),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => _deleteCourse(index), // Delete on tap
-                  ),
-                  onTap: () {
-                    // Add your navigation or tap action here
-                  },
-                );
+ @override
+Widget build(BuildContext context) {
+  return MainTemplate(
+    title: "placeD",
+    currentIndex: 1,
+   child: allCourses.isEmpty
+    ? const Center(child: Text("No courses saved"))
+    : SizedBox(
+        height: MediaQuery.of(context).size.height * 0.8, // Set a height
+        child: ListView.builder(
+          itemCount: allCourses.length,
+          itemBuilder: (context, index) {
+            final course = allCourses[index];
+            return ListTile(
+              title: Text(course.courseName),
+              subtitle: Text("Course ID: ${course.courseId}"),
+              leading: Image.network(course.courseImg),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () => _deleteCourse(index),
+              ),
+              onTap: () {
+                // Add your navigation or tap action here
               },
-            ),
-    );
-  }
+            );
+          },
+        ),
+      ),
+
+          );
+}
+
 }
