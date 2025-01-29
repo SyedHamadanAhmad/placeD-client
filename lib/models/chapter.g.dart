@@ -17,10 +17,10 @@ class ChapterAdapter extends TypeAdapter<Chapter> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Chapter(
-      topicName: fields[0] as String,
+      topic_name: fields[0] as String,
       paragraphs: (fields[1] as List).cast<String>(),
       links: (fields[2] as List).cast<String>(),
-      ytLinks: (fields[3] as List).cast<YoutubeLinks>(),
+      yt_links: (fields[3] as List).cast<YoutubeLinks>(),
     );
   }
 
@@ -29,13 +29,13 @@ class ChapterAdapter extends TypeAdapter<Chapter> {
     writer
       ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.topicName)
+      ..write(obj.topic_name)
       ..writeByte(1)
       ..write(obj.paragraphs)
       ..writeByte(2)
       ..write(obj.links)
       ..writeByte(3)
-      ..write(obj.ytLinks);
+      ..write(obj.yt_links);
   }
 
   @override

@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:placed_client/pages/course_page.dart';
+import 'package:placed_client/models/chapter.dart';
+import 'package:placed_client/models/youtube_links.dart';
+import 'course_page.dart';
 import 'dart:math';
 
 class TableOfContents extends StatefulWidget {
@@ -225,10 +227,11 @@ class _TableOfContentsState extends State<TableOfContents> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _isLoading ? null : _sendPostRequest, // Disable button while loading
+         tooltip: 'Send Request',
         child: _isLoading
             ? CircularProgressIndicator(color: Colors.white)
             : Icon(Icons.arrow_forward),
-        tooltip: 'Send Request',
+       
       ),
     );
   }

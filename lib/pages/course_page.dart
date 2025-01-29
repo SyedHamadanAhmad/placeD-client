@@ -1,58 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart'; // Add this import for the player
 import 'package:url_launcher/url_launcher.dart'; // Import for URL launcher
-
-class YoutubeLink {
-  String title;
-  String video_url;
-
-  YoutubeLink(this.title, this.video_url);
-
-  // Factory constructor to create a YoutubeLink from a map (response data)
-  factory YoutubeLink.fromJson(Map<String, dynamic> json) {
-    return YoutubeLink(
-      json['title'] ?? '',
-      json['video_url'] ?? '',
-    );
-  }
-}
-
-class Chapter {
-  String topic_name;
-  List<String> paragraphs;
-  List<String> links;
-  List<YoutubeLink> yt_links;
-
-  Chapter({
-    required this.topic_name,
-    required this.paragraphs,
-    required this.links,
-    required this.yt_links,
-  });
-
-  // Factory constructor to create a Chapter from a map (response data)
-  factory Chapter.fromJson(Map<String, dynamic> json) {
-    return Chapter(
-      topic_name: json['topic_name'] ?? '',
-      paragraphs: List<String>.from(json['paragraphs'] ?? []),
-      links: List<String>.from(json['links'] ?? []),
-      yt_links: (json['yt_links'] as List)
-          .map((ytLinkJson) => YoutubeLink.fromJson(ytLinkJson))
-          .toList(),
-    );
-  }
-}
+import 'package:placed_client/models/courses.dart';
+import 'package:hive/hive.dart';
+import 'package:placed_client/models/chapter.dart';
+import 'package:placed_client/models/youtube_links.dart';
 
 
-// Keep the YoutubeLink and Chapter classes the same
 
 class CoursePage extends StatefulWidget {
-  final String? courseId;
-  final String? courseName;
-  final String? courseImage;
-  final List<Chapter> chapters;
+  late  String courseId;
+  late String courseName;
+  late String courseImage;
+  late List<Chapter> chapters;
 
-  const CoursePage({
+  CoursePage({
     super.key,
     required this.courseId,
     required this.courseImage,
@@ -78,7 +40,25 @@ class _CoursePageState extends State<CoursePage> {
     _pageController = PageController(keepPage: true);
     _currentChapterIndex = 0;
   }
+  Future<void> _saveCoursetoHive() async {
+    try{
+      
+      Box<Courses> coursesBox = await Hive.openBox<Courses>('courses');
+      print("Entered _saveCoursetoHive() function");
+      Courses toAdd=Courses(courseId: widget.courseId, courseName: widget.courseName, courseImg: widget.courseImage, content: widget.chapters);
+      await coursesBox.put(toAdd.courseId, toAdd);
+      print("Course added successfully with course ID: ${toAdd.courseId}");
 
+      Courses? course = coursesBox.values.firstWhere(
+      (element) => element.courseId == widget.courseId,
+      orElse: () => Courses(courseId: '', courseName: '', lastIndex: 0, courseImg: '', content: []), // In case no course is found, return a default Courses object
+    );
+      
+    }
+    catch(e){
+      print('Error saving course ${e}');
+    }
+  }
   @override
   void dispose() {
     _youtubePlayerController?.dispose();
@@ -86,6 +66,7 @@ class _CoursePageState extends State<CoursePage> {
     super.dispose();
   }
 
+  
   // Extract progress indicator to a separate widget for better performance
   Widget _buildProgressIndicator(int index) {
     return Expanded(
@@ -121,7 +102,7 @@ class _CoursePageState extends State<CoursePage> {
   }
 
   // Extract YouTube video widget to a separate stateful widget
-  Widget _buildYoutubeVideo(YoutubeLink ytLink) {
+  Widget _buildYoutubeVideo(YoutubeLinks ytLink) {
     final videoId = YoutubePlayer.convertUrlToId(ytLink.video_url);
     if (videoId == null) return const SizedBox.shrink();
 
@@ -168,6 +149,7 @@ class _CoursePageState extends State<CoursePage> {
                 ),
               ),
             ),
+            
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -177,6 +159,7 @@ class _CoursePageState extends State<CoursePage> {
                   chapter: widget.chapters[index],
                   primaryGreen: primaryGreen,
                   buildYoutubeVideo: _buildYoutubeVideo,
+                  onSave: _saveCoursetoHive,
                 ),
               ),
             ),
@@ -283,12 +266,13 @@ class _LazyYoutubePlayerState extends State<_LazyYoutubePlayer> {
 class _ChapterContent extends StatelessWidget {
   final Chapter chapter;
   final Color primaryGreen;
-  final Widget Function(YoutubeLink) buildYoutubeVideo;
-
+  final Widget Function(YoutubeLinks) buildYoutubeVideo;
+  final VoidCallback onSave;
   const _ChapterContent({
     required this.chapter,
     required this.primaryGreen,
     required this.buildYoutubeVideo,
+    required this.onSave,
     Key? key,
   }) : super(key: key);
 
@@ -311,6 +295,19 @@ class _ChapterContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+             Align(
+              alignment: Alignment.centerRight, // Aligns the button to the right side
+              child: IconButton(
+                icon: const Icon(Icons.download, color: Colors.blue), // Replace with download icon
+                onPressed: () {
+                  onSave();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Progress saved!')),
+                  );
+                },
+              ),
+            ),
+
             Text(
               chapter.topic_name,
               style: TextStyle(
@@ -473,3 +470,7 @@ class _NavigationButtons extends StatelessWidget {
     );
   }
 }
+
+
+
+

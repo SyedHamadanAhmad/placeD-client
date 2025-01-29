@@ -4,6 +4,7 @@ import 'package:placed_client/pages/course_page.dart';
 import 'package:placed_client/pages/homepage.dart'; // Update with the actual location of your HomePage
 //import 'package:placed_client/pages/coursespage.dart'; // Update with the actual location of your CoursesPage
 import 'package:placed_client/pages/resume_ques.dart';
+import 'package:placed_client/pages/saved_courses.dart';
 
 class MainTemplate extends StatelessWidget {
   final String title;
@@ -25,10 +26,10 @@ class MainTemplate extends StatelessWidget {
         );
         break;
       case 1:
-        /*Navigator.pushReplacement(
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => CoursePage()),
-        );*/
+          MaterialPageRoute(builder: (context) => SavedCourses()),
+        );
         break;
       case 2:
         Navigator.pushReplacement(

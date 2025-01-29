@@ -18,23 +18,26 @@ class CoursesAdapter extends TypeAdapter<Courses> {
     };
     return Courses(
       courseId: fields[0] as String,
+      lastIndex: fields[2] as int?,
       courseName: fields[1] as String,
-      courseImg: fields[2] as String,
-      content: (fields[3] as List).cast<Chapter>(),
+      courseImg: fields[3] as String,
+      content: (fields[4] as List).cast<Chapter>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Courses obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.courseId)
       ..writeByte(1)
       ..write(obj.courseName)
       ..writeByte(2)
-      ..write(obj.courseImg)
+      ..write(obj.lastIndex)
       ..writeByte(3)
+      ..write(obj.courseImg)
+      ..writeByte(4)
       ..write(obj.content);
   }
 

@@ -8,7 +8,14 @@ class YoutubeLinks extends HiveObject {
   String title;
 
   @HiveField(1)
-  String videoUrl;
+  String video_url;
 
-  YoutubeLinks({required this.title, required this.videoUrl});
+  YoutubeLinks({required this.title, required this.video_url});
+
+  factory YoutubeLinks.fromJson(Map<String, dynamic> json) {
+    return YoutubeLinks(
+      title: json['title'] ?? '',
+      video_url: json['video_url'] ?? '',
+    );
+  }
 }

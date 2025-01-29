@@ -8,7 +8,7 @@ import 'package:placed_client/pages/course_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:placed_client/pages/resume_ques.dart';
 import 'services/course_service.dart';
-
+import 'package:placed_client/pages/saved_courses.dart';
 //import 'screens/YoutubePlayerScreen.dart';
 
 void main() async {
@@ -17,7 +17,7 @@ void main() async {
   Hive.registerAdapter(ChapterAdapter());
   Hive.registerAdapter(YoutubeLinksAdapter());
   await CourseService.openBox();
-
+ 
   runApp(MyApp());
 }
 
@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => HomePage(),
         '/createCourse': (context) => CreateCourse(),
+        '/savedcourses': (context)=>SavedCourses(),
         '/resumeQuesPage': (context) => ResumeQuesPage()
       },
     );

@@ -18,7 +18,7 @@ class YoutubeLinksAdapter extends TypeAdapter<YoutubeLinks> {
     };
     return YoutubeLinks(
       title: fields[0] as String,
-      videoUrl: fields[1] as String,
+      video_url: fields[1] as String,
     );
   }
 
@@ -29,7 +29,7 @@ class YoutubeLinksAdapter extends TypeAdapter<YoutubeLinks> {
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
-      ..write(obj.videoUrl);
+      ..write(obj.video_url);
   }
 
   @override
