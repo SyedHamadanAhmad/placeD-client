@@ -38,7 +38,8 @@ class _TableOfContentsState extends State<TableOfContents> {
   }
 
   String generateCourseId() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     Random random = Random();
 
     // Generate a random alphanumeric string of the specified length
@@ -55,7 +56,8 @@ class _TableOfContentsState extends State<TableOfContents> {
     course_image_url = data['course_image'];
     // Convert contents to a mutable list
     final List<dynamic> rawContents = data['contents'];
-    contents = List<String>.from(rawContents.map((content) => content.toString()));
+    contents =
+        List<String>.from(rawContents.map((content) => content.toString()));
     course_id = generateCourseId();
     print("COURSE ID GENERATED: ${course_id}");
     // Initialize checkedStatus as a mutable list
@@ -122,7 +124,8 @@ class _TableOfContentsState extends State<TableOfContents> {
       _isLoading = true; // Set loading state to true
     });
 
-    final url = 'http://3.108.31.127/generate-course/'; // Replace with your API endpoint
+    final url =
+        'http://3.108.31.127/generate-course/'; // Replace with your API endpoint
 
     // Create a payload with selected contents
     List<String> selectedContents = getSelectedContents();
@@ -130,10 +133,11 @@ class _TableOfContentsState extends State<TableOfContents> {
     // Example payload to send (adjust as needed)
     final Map<String, dynamic> data = {
       'topic': courseName,
-      'level': widget.level,  // Use widget.level to access the level
-      'area': widget.domain,  // Use widget.domain to access the domain
-      'depth': widget.sliderValue,  // Use widget.sliderValue to access the slider value
-      'contents': selectedContents,  // Contents that are selected
+      'level': widget.level, // Use widget.level to access the level
+      'area': widget.domain, // Use widget.domain to access the domain
+      'depth': widget
+          .sliderValue, // Use widget.sliderValue to access the slider value
+      'contents': selectedContents, // Contents that are selected
     };
 
     // Send POST request
@@ -149,13 +153,15 @@ class _TableOfContentsState extends State<TableOfContents> {
         print('POST request successful');
         final List<dynamic> jsonData = jsonDecode(response.body);
         List<Chapter> chapters = jsonData
-            .map((chapterJson) => Chapter.fromJson(chapterJson as Map<String, dynamic>))
+            .map((chapterJson) =>
+                Chapter.fromJson(chapterJson as Map<String, dynamic>))
             .toList();
 
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => CoursePage(
+              saved: false,
               courseId: course_id,
               courseImage: course_image_url,
               courseName: courseName,
@@ -226,12 +232,13 @@ class _TableOfContentsState extends State<TableOfContents> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _isLoading ? null : _sendPostRequest, // Disable button while loading
-         tooltip: 'Send Request',
+        onPressed: _isLoading
+            ? null
+            : _sendPostRequest, // Disable button while loading
+        tooltip: 'Send Request',
         child: _isLoading
             ? CircularProgressIndicator(color: Colors.white)
             : Icon(Icons.arrow_forward),
-       
       ),
     );
   }

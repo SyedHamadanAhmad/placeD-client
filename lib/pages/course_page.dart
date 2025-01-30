@@ -6,10 +6,9 @@ import 'package:hive/hive.dart';
 import 'package:placed_client/models/chapter.dart';
 import 'package:placed_client/models/youtube_links.dart';
 
-
-
 class CoursePage extends StatefulWidget {
-  late  String courseId;
+  final bool saved;
+  late String courseId;
   late String courseName;
   late String courseImage;
   late List<Chapter> chapters;
@@ -17,6 +16,7 @@ class CoursePage extends StatefulWidget {
   CoursePage({
     super.key,
     required this.courseId,
+    required this.saved,
     required this.courseImage,
     required this.courseName,
     required this.chapters,
@@ -33,32 +33,40 @@ class _CoursePageState extends State<CoursePage> {
 
   // Cache common values
   final primaryGreen = const Color.fromARGB(255, 71, 149, 57);
-  
+
   @override
   void initState() {
     super.initState();
     _pageController = PageController(keepPage: true);
     _currentChapterIndex = 0;
   }
+
   Future<void> _saveCoursetoHive() async {
-    try{
-      
+    try {
       Box<Courses> coursesBox = await Hive.openBox<Courses>('courses');
       print("Entered _saveCoursetoHive() function");
-      Courses toAdd=Courses(courseId: widget.courseId, courseName: widget.courseName, courseImg: widget.courseImage, content: widget.chapters);
+      Courses toAdd = Courses(
+          courseId: widget.courseId,
+          courseName: widget.courseName,
+          courseImg: widget.courseImage,
+          content: widget.chapters);
       await coursesBox.put(toAdd.courseId, toAdd);
       print("Course added successfully with course ID: ${toAdd.courseId}");
 
       Courses? course = coursesBox.values.firstWhere(
-      (element) => element.courseId == widget.courseId,
-      orElse: () => Courses(courseId: '', courseName: '', lastIndex: 0, courseImg: '', content: []), // In case no course is found, return a default Courses object
-    );
-      
-    }
-    catch(e){
+        (element) => element.courseId == widget.courseId,
+        orElse: () => Courses(
+            courseId: '',
+            courseName: '',
+            lastIndex: 0,
+            courseImg: '',
+            content: []), // In case no course is found, return a default Courses object
+      );
+    } catch (e) {
       print('Error saving course ${e}');
     }
   }
+
   @override
   void dispose() {
     _youtubePlayerController?.dispose();
@@ -66,7 +74,6 @@ class _CoursePageState extends State<CoursePage> {
     super.dispose();
   }
 
-  
   // Extract progress indicator to a separate widget for better performance
   Widget _buildProgressIndicator(int index) {
     return Expanded(
@@ -83,14 +90,17 @@ class _CoursePageState extends State<CoursePage> {
           height: 24,
           margin: const EdgeInsets.symmetric(horizontal: 2),
           decoration: BoxDecoration(
-            color: index <= _currentChapterIndex ? primaryGreen : Colors.grey[200],
+            color:
+                index <= _currentChapterIndex ? primaryGreen : Colors.grey[200],
             borderRadius: BorderRadius.circular(4),
           ),
           child: Center(
             child: Text(
               '${index + 1}',
               style: TextStyle(
-                color: index <= _currentChapterIndex ? Colors.white : Colors.grey[600],
+                color: index <= _currentChapterIndex
+                    ? Colors.white
+                    : Colors.grey[600],
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
               ),
@@ -117,26 +127,29 @@ class _CoursePageState extends State<CoursePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-  elevation: 0,
-  backgroundColor: primaryGreen,
-  title: Text(
-    'Course: ${widget.courseName}',
-    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-  ),
-  actions: [
-    
-    IconButton(
-      icon: const Icon(Icons.download, color: Colors.white), // Download Button
-      onPressed: () {
-        _saveCoursetoHive();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Course saved!')),
-        );
-      },
-    ),
-  ],
-),
-
+        elevation: 0,
+        backgroundColor: primaryGreen,
+        title: Text(
+          'Course: ${widget.courseName}',
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+        actions: [
+          if (widget.saved == false) ...[
+            // This checks if saved is false
+            IconButton(
+              icon: const Icon(Icons.download,
+                  color: Colors.white), // Download Button
+              onPressed: () {
+                _saveCoursetoHive();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Course saved!')),
+                );
+              },
+            ),
+          ],
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         child: Column(
@@ -162,12 +175,12 @@ class _CoursePageState extends State<CoursePage> {
                 ),
               ),
             ),
-            
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
                 itemCount: widget.chapters.length,
-                onPageChanged: (index) => setState(() => _currentChapterIndex = index),
+                onPageChanged: (index) =>
+                    setState(() => _currentChapterIndex = index),
                 itemBuilder: (context, index) => _ChapterContent(
                   chapter: widget.chapters[index],
                   primaryGreen: primaryGreen,
@@ -430,7 +443,8 @@ class _NavigationButtons extends StatelessWidget {
                 onPressed: onPrevious,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryGreen,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -450,7 +464,8 @@ class _NavigationButtons extends StatelessWidget {
                 onPressed: onNext,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryGreen,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -470,7 +485,3 @@ class _NavigationButtons extends StatelessWidget {
     );
   }
 }
-
-
-
-
