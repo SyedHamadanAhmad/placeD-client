@@ -4,10 +4,17 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:placed_client/models/user_model.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:placed_client/models/courses.dart';
+import 'package:placed_client/pages/course_page.dart';
 
-class HomePage extends StatelessWidget {
-  final CarouselSliderController _carouselController =
-      CarouselSliderController();
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final CarouselSliderController _carouselController = CarouselSliderController();
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +24,10 @@ class HomePage extends StatelessWidget {
       currentIndex: 0,
       child: SingleChildScrollView(
         child: Padding(
-          padding:
-              const EdgeInsets.all(16.0), // Add padding for overall spacing
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Welcome text
               Text(
                 'Welcome back!',
                 style: TextStyle(
@@ -30,9 +35,9 @@ class HomePage extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 16), // Space below the welcome text
+              SizedBox(height: 16),
 
-              // Carousel slider at the top
+              // First carousel remains the same
               CarouselSlider(
                 carouselController: _carouselController,
                 items: [
@@ -76,9 +81,9 @@ class HomePage extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                 ),
               ),
-              SizedBox(height: 20), // Space below the first carousel
+              SizedBox(height: 20),
 
-              // Floating container with add courses button
+              // Floating container
               Container(
                 height: 75,
                 padding: EdgeInsets.symmetric(horizontal: 16),
@@ -126,7 +131,6 @@ class HomePage extends StatelessWidget {
                         else{
                           Navigator.pushNamed(context, '/profile');
                         }
-                       
                       },
                       icon: Icon(
                         Icons.add,
@@ -137,9 +141,8 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 20), // Space below the floating container
+              SizedBox(height: 20),
 
-              // Explore catalog text
               Text(
                 'Explore our catalog',
                 style: TextStyle(
@@ -147,7 +150,7 @@ class HomePage extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 3), // Space below the header text
+              SizedBox(height: 3),
               Text(
                 'Pick from our recommended selection',
                 style: TextStyle(
@@ -156,48 +159,117 @@ class HomePage extends StatelessWidget {
                   color: const Color.fromARGB(136, 245, 83, 14),
                 ),
               ),
-              SizedBox(height: 16), // Space below the text
+              SizedBox(height: 16),
 
-              // Second carousel slider
-              CarouselSlider(
-                items: [
-                  'Catalog Slide 1',
-                  'Catalog Slide 2',
-                  'Catalog Slide 3',
-                ].map((item) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 194, 193, 193),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Center(
-                          child: Text(
-                            item,
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }).toList(),
-                options: CarouselOptions(
-                  height: 180,
-                  aspectRatio: 16 / 9,
-                  viewportFraction: 0.8,
-                  initialPage: 0,
-                  enableInfiniteScroll: true,
-                  autoPlay: false,
-                  enlargeCenterPage: true,
-                  enlargeFactor: 0.3,
-                  scrollDirection: Axis.horizontal,
+              // Modified carousel with larger title container
+              ValueListenableBuilder(
+                valueListenable: Hive.box('catalogCourses').listenable(),
+                builder: (context, Box box, _) {
+                  final courses = box.values.toList().cast<Courses>();
+                  
+                  if (courses.isEmpty) {
+                    return Center(
+                      child: Text('No courses available'),
+                    );
+                  }
+
+                 return CarouselSlider(
+  items: courses.map((course) {
+    return Builder(
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () {
+            // Navigate to course detail page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CoursePage(courseId: course.courseId, saved: true, courseImage: course.courseImg, courseName: course.courseName, chapters: course.content)
+              ),
+            );
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            margin: EdgeInsets.symmetric(horizontal: 5.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
                 ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Image.network(
+                      course.courseImg,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[300],
+                          child: Icon(
+                            Icons.broken_image,
+                            color: Colors.grey[500],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            course.courseName,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }).toList(),
+  options: CarouselOptions(
+    height: 300,
+    aspectRatio: 16 / 9,
+    viewportFraction: 0.8,
+    initialPage: 0,
+    enableInfiniteScroll: true,
+    autoPlay: false,
+    enlargeCenterPage: true,
+    enlargeFactor: 0.3,
+    scrollDirection: Axis.horizontal,
+  ),
+);
+
+                },
               ),
             ],
           ),

@@ -14,7 +14,7 @@ import 'package:placed_client/pages/saved_courses.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:placed_client/pages/profile.dart';
 import 'package:placed_client/models/user_model.dart';
-
+import 'package:placed_client/course_catalog.dart';
 
 void main() async {
   await Hive.initFlutter(); // Initialize Hive
@@ -23,7 +23,7 @@ void main() async {
   Hive.registerAdapter(YoutubeLinksAdapter());
   await CourseService.openBox();
   await Firebase.initializeApp();
-
+  await addDefaultCoursesToHive();
   runApp(
     ChangeNotifierProvider(
       create: (context) => UserProvider(),
@@ -32,6 +32,17 @@ void main() async {
   );
 }
 
+Future<void> addDefaultCoursesToHive() async {
+  var box = await Hive.openBox('catalogCourses');
+
+  // Check if courses are already in the box to avoid duplicates
+  if (box.isEmpty) {
+    // Add the default courses to the box
+    box.put('course001', course1);
+    box.put('course002', course2);
+    box.put('course003', course3);
+  }
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

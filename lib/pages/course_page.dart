@@ -148,7 +148,16 @@ class _CoursePageState extends State<CoursePage> {
               },
             ),
           ],
+          IconButton(
+              icon: const Icon(Icons.close,
+                  color: Colors.white), // Download Button
+              onPressed: () {
+                Navigator.pushNamed(context, '/');
+              },
+            ),
+
         ],
+
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
