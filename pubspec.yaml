@@ -44,6 +44,7 @@ dependencies:
   url_launcher: ^6.3.1 
   provider: ^6.1.2
   firebase_core: ^3.10.1
+  firebase_core_web: ^2.19.0
   firebase_auth: ^5.4.1
   google_sign_in: ^6.2.2 
 dev_dependencies:

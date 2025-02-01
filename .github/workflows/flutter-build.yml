@@ -1,0 +1,46 @@
+name: Flutter Build & Upload
+
+on:
+  push:
+    branches:
+      - main # Change this if needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x.x" # Change to your Flutter version
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Run Hive Code Generation
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Run Tests (Optional)
+        run: flutter test
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build App Bundle (AAB)
+        run: flutter build appbundle
+
+      - name: Upload APK to GitHub Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload AAB to GitHub Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab

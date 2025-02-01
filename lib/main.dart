@@ -15,6 +15,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:placed_client/pages/profile.dart';
 import 'package:placed_client/models/user_model.dart';
 import 'package:placed_client/course_catalog.dart';
+import 'package:flutter/foundation.dart'; // Needed for kIsWeb
+
 
 void main() async {
   await Hive.initFlutter(); // Initialize Hive
@@ -22,7 +24,23 @@ void main() async {
   Hive.registerAdapter(ChapterAdapter());
   Hive.registerAdapter(YoutubeLinksAdapter());
   await CourseService.openBox();
-  await Firebase.initializeApp();
+  if (kIsWeb) {
+    // Web: Explicit FirebaseOptions required
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "AIzaSyByQmkTFq9PS3Yb0uLl2FokXHoXikUZuCw",
+        authDomain: "placedserverv1.firebaseapp.com",
+        projectId: "placedserverv1",
+        storageBucket: "placedserverv1.firebasestorage.appT",
+        messagingSenderId:  "593370143446",
+        appId: "1:593370143446:web:4244e813c6b715a5730777",
+      ),
+    );
+  }
+  else{
+    await Firebase.initializeApp();
+  }
+  
   await addDefaultCoursesToHive();
   runApp(
     ChangeNotifierProvider(
