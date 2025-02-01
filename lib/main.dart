@@ -74,14 +74,21 @@ class MyApp extends StatelessWidget {
           seedColor: const Color.fromARGB(255, 71, 149, 57),
         ),
       ),
+      builder: (context, child) {
+        return Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: child!,
+          ),
+        );
+      },
       initialRoute: '/',
-      // Use routes for static routes
       routes: {
         '/': (context) => HomePage(),
         '/createCourse': (context) => CreateCourse(),
-        '/savedcourses': (context)=>SavedCourses(),
+        '/savedcourses': (context) => SavedCourses(),
         '/resumeQuesPage': (context) => ResumeQuesPage(),
-        '/profile': (context) => const ProfilePage(), // Profile route
+        '/profile': (context) => const ProfilePage(),
       },
     );
   }
