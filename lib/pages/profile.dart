@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:placed_client/models/user_model.dart';  // Import your user provider
+import 'package:placed_client/models/user_model.dart'; // Import your user provider
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -23,7 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
         this.user = user;
       });
       if (user != null) {
-        context.read<UserProvider>().setUser(user!); // Set the user in provider
+        context.read<UserProvider>().setUser(user); // Set the user in provider
       }
     });
   }
@@ -32,7 +32,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser!.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
