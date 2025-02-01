@@ -12,9 +12,9 @@ class CreateCourse extends StatefulWidget {
 }
 
 class _CreateCourseState extends State<CreateCourse> {
-  String level = ''; // To store the selected level for buttons
-  double sliderValue = 0; // To store the slider value
-  String sliderLevel = 'Beginner'; // To store the slider-selected level
+  String level = '';
+  double sliderValue = 0;
+  String sliderLevel = 'Beginner';
   String topic = "";
   String? domain;
 
@@ -23,6 +23,8 @@ class _CreateCourseState extends State<CreateCourse> {
 
   @override
   Widget build(BuildContext context) {
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    
     return MainTemplate(
       title: 'PlaceD',
       currentIndex: 0,
@@ -31,38 +33,33 @@ class _CreateCourseState extends State<CreateCourse> {
           children: [
             SizedBox(height: 10),
             Text(
-              'First, let\'s get to know you', // Big text
+              'First, let\'s get to know you',
               style: TextStyle(
-                fontSize: MediaQuery.of(context).size.width *
-                    0.075, // Scales with screen width
-                fontWeight: FontWeight.bold, // Bold style
+                fontSize: 24 * textScaleFactor,
+                fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 8),
             Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.05),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
-                'Fill out a few prompts to help us curate the best course for you.', // Smaller grey text
+                'Fill out a few prompts to help us curate the best course for you.',
                 style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width *
-                      0.04, // Dynamic font size
+                  fontSize: 16 * textScaleFactor,
                   color: Colors.grey,
                 ),
                 textAlign: TextAlign.center,
               ),
             ),
             SizedBox(height: 20),
-            greyBackgroundBoxWithButtons(
-                "What level would you like to learn at?"),
+            greyBackgroundBoxWithButtons("What level would you like to learn at?"),
             SizedBox(height: 20),
-            greyBackgroundBoxWithSlider(
-                "How much depth would you like to learn at?"),
+            greyBackgroundBoxWithSlider("How much depth would you like to learn at?"),
             SizedBox(height: 20),
             domainSelector(),
             SizedBox(height: 20),
             inputTopic(),
-            SizedBox(height: 15), // Reduced the space before the submit button
+            SizedBox(height: 15),
             submitButton()
           ],
         ),
@@ -70,11 +67,11 @@ class _CreateCourseState extends State<CreateCourse> {
     );
   }
 
-  /// Grey box with buttons
   Widget greyBackgroundBoxWithButtons(String text) {
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    
     return Container(
-      margin: EdgeInsets.symmetric(
-          vertical: 10, horizontal: MediaQuery.of(context).size.width * 0.05),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.grey[200],
@@ -86,7 +83,7 @@ class _CreateCourseState extends State<CreateCourse> {
           Text(
             text,
             style: TextStyle(
-              fontSize: MediaQuery.of(context).size.width * 0.05,
+              fontSize: 18 * textScaleFactor,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
@@ -95,7 +92,6 @@ class _CreateCourseState extends State<CreateCourse> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // Using Flexible to make all buttons have equal width
               Flexible(child: levelButton('Beginner')),
               Flexible(child: levelButton('Intermediate')),
               Flexible(child: levelButton('Expert')),
@@ -106,11 +102,11 @@ class _CreateCourseState extends State<CreateCourse> {
     );
   }
 
-  /// Grey box with slider
   Widget greyBackgroundBoxWithSlider(String text) {
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    
     return Container(
-      margin: EdgeInsets.symmetric(
-          vertical: 10, horizontal: MediaQuery.of(context).size.width * 0.05),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.grey[200],
@@ -122,16 +118,16 @@ class _CreateCourseState extends State<CreateCourse> {
           Text(
             text,
             style: TextStyle(
-              fontSize: MediaQuery.of(context).size.width * 0.05,
+              fontSize: 18 * textScaleFactor,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 15),
           Text(
-            sliderLevel, // Display the level based on the slider value
+            sliderLevel,
             style: TextStyle(
-              fontSize: MediaQuery.of(context).size.width * 0.05,
+              fontSize: 18 * textScaleFactor,
               fontWeight: FontWeight.bold,
               color: Color.fromARGB(255, 71, 149, 57),
             ),
@@ -161,39 +157,35 @@ class _CreateCourseState extends State<CreateCourse> {
     );
   }
 
-  /// Method to create individual buttons
   Widget levelButton(String text) {
-    bool isSelected = level == text; // Check if this button is selected
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    bool isSelected = level == text;
+    
     return GestureDetector(
       onTap: () {
         setState(() {
-          level = text; // Update the selected level
+          level = text;
         });
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         decoration: BoxDecoration(
-          color: isSelected
-              ? Color.fromARGB(255, 71, 149, 57)
-              : Colors.white, // Highlight if selected
+          color: isSelected ? Color.fromARGB(255, 71, 149, 57) : Colors.white,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isSelected
-                ? Color.fromARGB(255, 71, 149, 57)
-                : Colors.grey, // Change border color
+            color: isSelected ? Color.fromARGB(255, 71, 149, 57) : Colors.grey,
             width: 2,
           ),
         ),
         child: FittedBox(
-          fit: BoxFit.scaleDown, // Scales down the text to fit
+          fit: BoxFit.scaleDown,
           child: Text(
             text,
             style: TextStyle(
-              fontSize: 16, // Default font size
-              color:
-                  isSelected ? Colors.white : Colors.black, // Change text color
+              fontSize: 14 * textScaleFactor,
+              color: isSelected ? Colors.white : Colors.black,
             ),
-            textAlign: TextAlign.center, // Center the text horizontally
+            textAlign: TextAlign.center,
           ),
         ),
       ),
@@ -201,9 +193,10 @@ class _CreateCourseState extends State<CreateCourse> {
   }
 
   Widget inputTopic() {
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    
     return Container(
-      margin: EdgeInsets.symmetric(
-          vertical: 10, horizontal: MediaQuery.of(context).size.width * 0.05),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.grey[200],
@@ -215,7 +208,7 @@ class _CreateCourseState extends State<CreateCourse> {
           Text(
             "Please enter your preparation topic",
             style: TextStyle(
-              fontSize: MediaQuery.of(context).size.width * 0.05,
+              fontSize: 18 * textScaleFactor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -226,9 +219,11 @@ class _CreateCourseState extends State<CreateCourse> {
                 topic = value;
               });
             },
+            style: TextStyle(fontSize: 16 * textScaleFactor),
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               hintText: "Enter topic here",
+              hintStyle: TextStyle(fontSize: 16 * textScaleFactor),
             ),
           ),
         ],
@@ -237,9 +232,10 @@ class _CreateCourseState extends State<CreateCourse> {
   }
 
   Widget domainSelector() {
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    
     return Container(
-      margin: EdgeInsets.symmetric(
-          vertical: 10, horizontal: MediaQuery.of(context).size.width * 0.05),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       padding: EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.grey[200],
@@ -251,20 +247,27 @@ class _CreateCourseState extends State<CreateCourse> {
           Text(
             "Select a domain",
             style: TextStyle(
-              fontSize: MediaQuery.of(context).size.width * 0.05,
+              fontSize: 18 * textScaleFactor,
               fontWeight: FontWeight.bold,
             ),
           ),
           SizedBox(height: 10),
           DropdownButton<String>(
             value: domain,
-            hint: Text("Choose a domain"),
+            hint: Text(
+              "Choose a domain",
+              style: TextStyle(fontSize: 16 * textScaleFactor),
+            ),
             isExpanded: true,
             onChanged: (String? newValue) {
               setState(() {
                 domain = newValue!;
               });
             },
+            style: TextStyle(
+              fontSize: 16 * textScaleFactor,
+              color: Colors.black,
+            ),
             items: <String>[
               'Software Engineering - MAANG',
               'Software Engineering - Product Based Companies',
@@ -284,6 +287,8 @@ class _CreateCourseState extends State<CreateCourse> {
   }
 
   Widget submitButton() {
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
+    
     return ElevatedButton(
       onPressed: _isLoading
           ? null
@@ -292,10 +297,6 @@ class _CreateCourseState extends State<CreateCourse> {
                 _isLoading = true;
                 _errorMessage = '';
               });
-              print(level);
-              print(sliderValue);
-              print(domain);
-              print(topic);
               try {
                 await sendPostRequest();
               } catch (e) {
@@ -318,9 +319,10 @@ class _CreateCourseState extends State<CreateCourse> {
           : Text(
               'Submit',
               style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+                fontSize: 16 * textScaleFactor,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
     );
   }

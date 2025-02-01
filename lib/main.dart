@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
+            constraints: const BoxConstraints(maxWidth: 450),
             child: child!,
           ),
         );
