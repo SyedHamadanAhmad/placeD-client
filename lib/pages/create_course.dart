@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'table_of_contents.dart';
 
 class CreateCourse extends StatefulWidget {
+  const CreateCourse({super.key});
+
   @override
   _CreateCourseState createState() => _CreateCourseState();
 }
@@ -324,8 +326,8 @@ class _CreateCourseState extends State<CreateCourse> {
   }
 
   Future<void> sendPostRequest() async {
-    String toc_endpoint = "http://3.108.31.127/toc/";
-    final url = Uri.parse(toc_endpoint);
+    String tocEndpoint = "http://3.108.31.127/toc/";
+    final url = Uri.parse(tocEndpoint);
     final data = {
       'topic': topic,
       'level': level,

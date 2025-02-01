@@ -13,6 +13,7 @@ class TableOfContents extends StatefulWidget {
   final double sliderValue;
 
   const TableOfContents({
+    super.key,
     required this.responseBody,
     required this.level,
     required this.domain,
@@ -59,7 +60,7 @@ class _TableOfContentsState extends State<TableOfContents> {
     contents =
         List<String>.from(rawContents.map((content) => content.toString()));
     course_id = generateCourseId();
-    print("COURSE ID GENERATED: ${course_id}");
+    print("COURSE ID GENERATED: $course_id");
     // Initialize checkedStatus as a mutable list
     checkedStatus = List<bool>.filled(contents.length, true, growable: true);
   }
