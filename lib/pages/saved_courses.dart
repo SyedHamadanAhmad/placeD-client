@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:placed_client/models/courses.dart';
 import 'package:placed_client/pages/course_page.dart';
+import 'package:provider/provider.dart';
+import 'package:placed_client/services/latest_course_provider.dart';
 import 'package:placed_client/templates_lib/main_template.dart'; // Make sure to import the Courses model
 
 class SavedCourses extends StatefulWidget {
@@ -119,6 +121,9 @@ class _SavedCoursesState extends State<SavedCourses> {
                       onPressed: () => _deleteCourse(index),
                     ),
                     onTap: () {
+                      context
+                          .read<LatestCourseProvider>()
+                          .setLatestCourseId(course.courseId);
                       // Navigate to the CoursePage when a course is tapped
                       Navigator.push(
                         context,

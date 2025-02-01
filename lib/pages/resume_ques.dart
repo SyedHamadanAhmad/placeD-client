@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:placed_client/templates_lib/main_template.dart';
 
 class ResumeQuesPage extends StatelessWidget {
+  const ResumeQuesPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MainTemplate(

@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
 import 'youtube_links.dart'; // Import the YoutubeLinks class
-import 'package:placed_client/pages/course_page.dart';
 part 'chapter.g.dart'; // Make sure this part file is generated
 
 @HiveType(typeId: 2)
@@ -23,7 +22,7 @@ class Chapter extends HiveObject {
       required this.links,
       required this.yt_links});
 
-    factory Chapter.fromJson(Map<String, dynamic> json) {
+  factory Chapter.fromJson(Map<String, dynamic> json) {
     return Chapter(
       topic_name: json['topic_name'] ?? '',
       paragraphs: List<String>.from(json['paragraphs'] ?? []),
@@ -32,6 +31,5 @@ class Chapter extends HiveObject {
           .map((ytLinkJson) => YoutubeLinks.fromJson(ytLinkJson))
           .toList(),
     );
-}
-
+  }
 }

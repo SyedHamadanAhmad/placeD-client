@@ -7,6 +7,7 @@ import 'package:placed_client/pages/create_course.dart';
 import 'package:placed_client/pages/course_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:placed_client/pages/resume_ques.dart';
+import 'package:placed_client/services/latest_course_provider.dart';
 import 'package:provider/provider.dart';
 import 'services/course_service.dart';
 import 'package:placed_client/pages/saved_courses.dart';
@@ -25,8 +26,11 @@ void main() async {
   await Firebase.initializeApp();
   await addDefaultCoursesToHive();
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => LatestCourseProvider()),
+      ],
       child: MyApp(),
     ),
   );
@@ -43,6 +47,7 @@ Future<void> addDefaultCoursesToHive() async {
     box.put('course003', course3);
   }
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -61,7 +66,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => HomePage(),
         '/createCourse': (context) => CreateCourse(),
-        '/savedcourses': (context)=>SavedCourses(),
+        '/savedcourses': (context) => SavedCourses(),
         '/resumeQuesPage': (context) => ResumeQuesPage(),
         '/profile': (context) => const ProfilePage(), // Profile route
       },
