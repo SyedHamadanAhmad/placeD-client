@@ -1341,4 +1341,4 @@ List<dynamic> responseData3=jsonDecode(response3);
 List<Chapter> chapters3 = responseData2.map((json) => Chapter.fromJson(json)).toList();
 
 
-Courses course3=Courses(courseId: "003", courseName: "Analyst Prep Course: SQL, PowerBI, Python", courseImg: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fsqlspreads.com%2Fblog%2Fconnect-power-bi-to-sql-server-step-by-step-guide%2F&psig=AOvVaw3lwDl33gSe1yWIiQiKkkZj&ust=1738511228760000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCLi5nZTpoosDFQAAAAAdAAAAABAE", content: chapters3);
+Courses course3=Courses(courseId: "003", courseName: "Analyst Prep Course: SQL, PowerBI, Python", courseImg: "https://www.techielass.com/content/images/size/w2000/2021/03/azuresqlpowerbi.png", content: chapters3);
