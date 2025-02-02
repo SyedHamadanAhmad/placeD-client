@@ -3,10 +3,7 @@ import 'dart:convert';
 import 'package:placed_client/models/courses.dart';
 import 'package:placed_client/models/chapter.dart';
 
-
-
-
-String response1='''[
+String response1 = '''[
 
     {
         "topic_name": "Introduction to Data Structures and Algorithms",
@@ -361,16 +358,18 @@ String response1='''[
 ]
 ''';
 
+List<dynamic> responseData1 = jsonDecode(response1);
+List<Chapter> chapters1 =
+    responseData1.map((json) => Chapter.fromJson(json)).toList();
 
-List<dynamic> responseData1=jsonDecode(response1);
-List<Chapter> chapters1 = responseData1.map((json) => Chapter.fromJson(json)).toList();
+Courses course1 = Courses(
+    courseId: "001",
+    courseName: "DSA for Software Interviews (Beginner Level)",
+    courseImg:
+        "https://miro.medium.com/v2/resize:fit:1400/format:webp/0*Rhu1FRkUGZFAeGIy",
+    content: chapters1);
 
-
-Courses course1=Courses(courseId: "001", courseName: "DSA for Software Interviews (Beginner Level)", courseImg: "https://miro.medium.com/v2/resize:fit:1400/format:webp/0*Rhu1FRkUGZFAeGIy", content: chapters1);
-
-
-
-String response2=''' [
+String response2 = ''' [
     {
         "topic_name": "Introduction to Product Management",
         "paragraphs": [
@@ -714,14 +713,18 @@ String response2=''' [
     }
 ]''';
 
-List<dynamic> responseData2=jsonDecode(response2);
-List<Chapter> chapters2 = responseData2.map((json) => Chapter.fromJson(json)).toList();
+List<dynamic> responseData2 = jsonDecode(response2);
+List<Chapter> chapters2 =
+    responseData2.map((json) => Chapter.fromJson(json)).toList();
 
-Courses course2=Courses(courseId: "002", courseImg: "https://m.media-amazon.com/images/I/61ENCK31WdL._AC_UF1000,1000_QL80_.jpg", courseName: "Product Management Essentials for Placements", content:chapters2);
+Courses course2 = Courses(
+    courseId: "002",
+    courseImg:
+        "https://m.media-amazon.com/images/I/61ENCK31WdL._AC_UF1000,1000_QL80_.jpg",
+    courseName: "Product Management Essentials for Placements",
+    content: chapters2);
 
-
-
-String response3='''[
+String response3 = '''[
     {
         "topic_name": "Introduction to Consulting and Analyst Roles",
         "paragraphs": [
@@ -1337,8 +1340,13 @@ String response3='''[
     }
 ] ''';
 
-List<dynamic> responseData3=jsonDecode(response3);
-List<Chapter> chapters3 = responseData2.map((json) => Chapter.fromJson(json)).toList();
+List<dynamic> responseData3 = jsonDecode(response3);
+List<Chapter> chapters3 =
+    responseData2.map((json) => Chapter.fromJson(json)).toList();
 
-
-Courses course3=Courses(courseId: "003", courseName: "Analyst Prep Course: SQL, PowerBI, Python", courseImg: "https://www.techielass.com/content/images/size/w2000/2021/03/azuresqlpowerbi.png", content: chapters3);
+Courses course3 = Courses(
+    courseId: "003",
+    courseName: "Analyst Prep Course: SQL, PowerBI, Python",
+    courseImg:
+        "https://static.tildacdn.one/tild6238-3035-4335-a333-306335373139/IMG_3349.jpg",
+    content: chapters3);
