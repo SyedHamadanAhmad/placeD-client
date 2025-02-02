@@ -1,16 +1,10 @@
 # placed_client
+ 
+The objective of PlaceD is to revolutionize placement preparation by creating an adaptive learning platform that uses AI to deliver personalized courses. Our goal is to empower students to efficiently acquire the skills and knowledge necessary for their target roles by tailoring the content to their current level, desired depth, and domain preferences. Our application is a quick one stop solution for placement preperation and the university level and also an excellent tool for last minute revision / reading over a specific topic for your interviews.
 
-A new Flutter project.
+## Check if flutter is installed, run this on your terminal
+if cd flutter; then git pull && cd .. ; else git clone https://github.com/flutter/flutter.git; fi && ls && flutter/bin/flutter doctor
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Run the application
+flutter run
