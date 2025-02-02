@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YouTubePlayerScreen extends StatefulWidget {
-  final String videoId;
+  final String videoId; // The ID of the YouTube video you want to play
 
-  const YouTubePlayerScreen({Key? key, required this.videoId})
-      : super(key: key);
+  YouTubePlayerScreen({required this.videoId});
 
   @override
   _YouTubePlayerScreenState createState() => _YouTubePlayerScreenState();
@@ -17,55 +16,42 @@ class _YouTubePlayerScreenState extends State<YouTubePlayerScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Initialize the YouTube player controller
     _controller = YoutubePlayerController(
-      initialVideoId: widget.videoId,
-      flags: const YoutubePlayerFlags(
-        autoPlay: false,
-        mute: false,
-        enableCaption: true,
-        isLive: false,
-        forceHD: true,
-        controlsVisibleAtStart: true,
-        hideThumbnail: true,
-        useHybridComposition: true,
+      initialVideoId: widget.videoId, // YouTube video ID
+      flags: YoutubePlayerFlags(
+        autoPlay: false, // Do not autoplay the video
+        mute: false, // Video sound is enabled
+        enableCaption: true, // Enable captions if available
       ),
     );
   }
 
   @override
   void dispose() {
+    // Dispose of the controller to free up resources
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return YoutubePlayerBuilder(
-      player: YoutubePlayer(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('YouTube Player'),
+      ),
+      body: YoutubePlayer(
         controller: _controller,
-        showVideoProgressIndicator: true,
-        progressColors: const ProgressBarColors(
-          playedColor: Colors.red,
-          handleColor: Colors.redAccent,
+        showVideoProgressIndicator: true, // Show the progress bar
+        progressColors: ProgressBarColors(
+          playedColor: Colors.red, // Color for the played section
+          handleColor: Colors.redAccent, // Color for the progress handle
         ),
         onReady: () {
           print('Player is ready.');
         },
-        bottomActions: [
-          CurrentPosition(),
-          ProgressBar(isExpanded: true),
-          RemainingDuration(),
-          FullScreenButton(), // Handles full-screen natively
-        ],
       ),
-      builder: (context, player) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('YouTube Player'),
-          ),
-          body: player,
-        );
-      },
     );
   }
 }
