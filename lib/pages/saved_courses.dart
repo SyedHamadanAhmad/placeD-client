@@ -130,6 +130,7 @@ class _SavedCoursesState extends State<SavedCourses> {
                         MaterialPageRoute(
                           builder: (context) => CoursePage(
                             courseId: course.courseId,
+                            lastSavedIndex: course.lastIndex,
                             saved:
                                 true, // You can set this based on the course's saved state
                             courseImage: course.courseImg,

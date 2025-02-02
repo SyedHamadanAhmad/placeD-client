@@ -17,57 +17,47 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final CarouselSliderController _carouselController =
-      CarouselSliderController();
-
-  // Updated method: Fetch the latest course details from Hive using the ID stored in the provider.
   void _goToLatestCourse() async {
-    // Retrieve the latest course ID from the provider.
-    final latestCourseId =
-        Provider.of<LatestCourseProvider>(context, listen: false).latestCourse;
+  final latestCourseId = Provider.of<LatestCourseProvider>(context, listen: false).latestCourse;
 
-    if (latestCourseId != null) {
-      // Open the Hive box for saved courses.
-      final Box<Courses> coursesBox = await Hive.openBox<Courses>('courses');
-
-      // Retrieve the course using its ID.
-      final Courses? course = coursesBox.get(latestCourseId);
-
-      if (course != null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CoursePage(
-              courseId: course.courseId,
-              saved: true,
-              courseImage: course.courseImg,
-              courseName: course.courseName,
-              chapters: course.content,
-            ),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Course not found for ID: $latestCourseId')),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No latest course set.')),
-      );
-    }
+  if (latestCourseId == null) {
+    
+    
+    Navigator.pushNamed(context, '/createCourse');
+    return;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    User? currentUser = context.watch<UserProvider>().user;
+  final Box<Courses> coursesBox = await Hive.openBox<Courses>('courses');
+  final Courses? course = coursesBox.get(latestCourseId);
 
-    // Create a list of slides for the top carousel.
-    final List<Widget> topCarouselItems = [
-      // First slide: "Continue your progress" with the embedded button.
-      Builder(
-        builder: (BuildContext context) {
-          return Container(
+  if (course != null) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CoursePage(
+          courseId: course.courseId,
+          lastSavedIndex: course.lastIndex,
+          saved: true,
+          courseImage: course.courseImg,
+          courseName: course.courseName,
+          chapters: course.content,
+        ),
+      ),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Course not found for ID: $latestCourseId')),
+    );
+  }
+}
+
+  Widget _buildProgressSlide() {
+      final latestCourseId = Provider.of<LatestCourseProvider>(context, listen: false).latestCourse;
+        bool hasCourse = latestCourseId != null;
+    return Builder(
+      builder: (BuildContext context) {
+        return Center(
+          child: Container(
             width: MediaQuery.of(context).size.width * 0.8,
             margin: EdgeInsets.symmetric(horizontal: 5.0),
             decoration: BoxDecoration(
@@ -81,16 +71,14 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            // Use a Stack so we can overlay the button inside this slide.
             child: Stack(
               children: [
-                // The slide text.
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      'Continue your progress',
+                      hasCourse ? 'Continue your progress' : "You haven't saved any courses yet",
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -99,7 +87,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                // Positioned circular button.
                 Positioned(
                   right: 16,
                   bottom: 16,
@@ -128,37 +115,15 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-          );
-        },
-      ),
-      // Second slide: "Second Item" without a button.
-      Builder(
-        builder: (BuildContext context) {
-          return Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            margin: EdgeInsets.symmetric(horizontal: 5.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  'Second Item',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    ];
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    User? currentUser = context.watch<UserProvider>().user;
 
     return MainTemplate(
       title: 'PlaceD',
@@ -170,34 +135,21 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Welcome back!',
+                currentUser != null ? 'Welcome back!' : 'Welcome',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               SizedBox(height: 16),
-              // Top Carousel using the list created above.
-              CarouselSlider(
-                carouselController: _carouselController,
-                items: topCarouselItems,
-                options: CarouselOptions(
+              if (currentUser != null) ...[
+                SizedBox(
                   height: 150,
-                  aspectRatio: 16 / 9,
-                  viewportFraction: 0.8,
-                  initialPage: 0,
-                  enableInfiniteScroll: true,
-                  autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 5),
-                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  enlargeCenterPage: true,
-                  enlargeFactor: 0.3,
-                  scrollDirection: Axis.horizontal,
+                  width: double.infinity,
+                  child: _buildProgressSlide(),
                 ),
-              ),
-              SizedBox(height: 20),
-              // Floating container for adding new courses.
+                SizedBox(height: 20),
+              ],
               Container(
                 height: 75,
                 padding: EdgeInsets.symmetric(horizontal: 16),
@@ -272,7 +224,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               SizedBox(height: 16),
-              // Bottom Carousel displaying catalog courses.
               ValueListenableBuilder(
                 valueListenable: Hive.box('catalogCourses').listenable(),
                 builder: (context, Box box, _) {
@@ -320,16 +271,14 @@ class _HomePageState extends State<HomePage> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
                                     Expanded(
                                       flex: 2,
                                       child: Image.network(
                                         course.courseImg,
                                         fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
+                                        errorBuilder: (context, error, stackTrace) {
                                           return Container(
                                             color: Colors.grey[300],
                                             child: Icon(
@@ -349,10 +298,8 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         color: Colors.white,
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
                                               course.courseName,

@@ -5,12 +5,16 @@ import 'package:placed_client/models/courses.dart';
 import 'package:hive/hive.dart';
 import 'package:placed_client/models/chapter.dart';
 import 'package:placed_client/models/youtube_links.dart';
+import 'package:placed_client/services/latest_course_provider.dart';
+import 'package:provider/provider.dart';
+
 
 class CoursePage extends StatefulWidget {
   final bool saved;
   late String courseId;
   late String courseName;
   late String courseImage;
+  final int? lastSavedIndex; // Optional last saved index
   late List<Chapter> chapters;
 
   CoursePage({
@@ -20,6 +24,7 @@ class CoursePage extends StatefulWidget {
     required this.courseImage,
     required this.courseName,
     required this.chapters,
+    this.lastSavedIndex
   });
 
   @override
@@ -38,7 +43,7 @@ class _CoursePageState extends State<CoursePage> {
   void initState() {
     super.initState();
     _pageController = PageController(keepPage: true);
-    _currentChapterIndex = 0;
+    _currentChapterIndex = widget.lastSavedIndex ?? 0;
   }
 
   Future<void> _saveCoursetoHive() async {
@@ -49,19 +54,20 @@ class _CoursePageState extends State<CoursePage> {
           courseId: widget.courseId,
           courseName: widget.courseName,
           courseImg: widget.courseImage,
+          lastIndex: _currentChapterIndex,
           content: widget.chapters);
       await coursesBox.put(toAdd.courseId, toAdd);
       print("Course added successfully with course ID: ${toAdd.courseId}");
 
-      Courses? course = coursesBox.values.firstWhere(
-        (element) => element.courseId == widget.courseId,
-        orElse: () => Courses(
-            courseId: '',
-            courseName: '',
-            lastIndex: 0,
-            courseImg: '',
-            content: []), // In case no course is found, return a default Courses object
-      );
+      // Courses? course = coursesBox.values.firstWhere(
+      //   (element) => element.courseId == widget.courseId,
+      //   orElse: () => Courses(
+      //       courseId: '',
+      //       courseName: '',
+      //       lastIndex: 0,
+      //       courseImg: '',
+      //       content: []), // In case no course is found, return a default Courses object
+      // );
     } catch (e) {
       print('Error saving course ${e}');
     }
@@ -152,6 +158,10 @@ class _CoursePageState extends State<CoursePage> {
               icon: const Icon(Icons.close,
                   color: Colors.white), // Download Button
               onPressed: () {
+                  final latestCourseProvider = Provider.of<LatestCourseProvider>(context, listen: false);
+                  if(widget.courseId != null){
+                    latestCourseProvider.setLatestCourseId(widget.courseId);
+                  }
                 Navigator.pushNamed(context, '/');
               },
             ),

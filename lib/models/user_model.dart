@@ -7,7 +7,7 @@ class UserProvider with ChangeNotifier {
   User? get user => _user;
 
   // Method to set user data
-  void setUser(User user) {
+  void setUser(User? user) {
     _user = user;
     notifyListeners(); // Notify listeners of changes
   }
@@ -16,5 +16,9 @@ class UserProvider with ChangeNotifier {
   void clearUser() {
     _user = null;
     notifyListeners(); // Notify listeners of changes
+  }
+   Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+    setUser(null); // Reset user state
   }
 }
