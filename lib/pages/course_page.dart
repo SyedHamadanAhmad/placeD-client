@@ -8,7 +8,6 @@ import 'package:placed_client/models/youtube_links.dart';
 import 'package:placed_client/services/latest_course_provider.dart';
 import 'package:provider/provider.dart';
 
-
 class CoursePage extends StatefulWidget {
   final bool saved;
   late String courseId;
@@ -17,15 +16,14 @@ class CoursePage extends StatefulWidget {
   final int? lastSavedIndex; // Optional last saved index
   late List<Chapter> chapters;
 
-  CoursePage({
-    super.key,
-    required this.courseId,
-    required this.saved,
-    required this.courseImage,
-    required this.courseName,
-    required this.chapters,
-    this.lastSavedIndex
-  });
+  CoursePage(
+      {super.key,
+      required this.courseId,
+      required this.saved,
+      required this.courseImage,
+      required this.courseName,
+      required this.chapters,
+      this.lastSavedIndex});
 
   @override
   _CoursePageState createState() => _CoursePageState();
@@ -155,19 +153,18 @@ class _CoursePageState extends State<CoursePage> {
             ),
           ],
           IconButton(
-              icon: const Icon(Icons.close,
-                  color: Colors.white), // Download Button
-              onPressed: () {
-                  final latestCourseProvider = Provider.of<LatestCourseProvider>(context, listen: false);
-                  if(widget.courseId != null){
-                    latestCourseProvider.setLatestCourseId(widget.courseId);
-                  }
-                Navigator.pushNamed(context, '/');
-              },
-            ),
-
+            icon:
+                const Icon(Icons.close, color: Colors.white), // Download Button
+            onPressed: () {
+              final latestCourseProvider =
+                  Provider.of<LatestCourseProvider>(context, listen: false);
+              if (widget.courseId != null) {
+                latestCourseProvider.setLatestCourseId(widget.courseId);
+              }
+              Navigator.pushNamed(context, '/');
+            },
+          ),
         ],
-
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
