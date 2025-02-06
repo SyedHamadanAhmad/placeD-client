@@ -380,7 +380,7 @@ class _CreateCourseState extends State<CreateCourse> {
   }
 
   Future<void> sendPostRequest() async {
-    String tocEndpoint = "http://3.108.31.127/toc/";
+    String tocEndpoint = "http://3.109.123.153/toc/";
     final url = Uri.parse(tocEndpoint);
     final data = {
       'topic': topic,
